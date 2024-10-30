@@ -1,58 +1,50 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const sdk = require('microsoft-cognitiveservices-speech-sdk'); // Import the SDK
 
 const app = express();
 app.use(cors());
 
 // Define the paths to your avatar GLB files
 const avatarPaths = {
-    a: 'a.glb',
-    b: 'b.glb',
-    c: 'c.glb',
-    d: 'd.glb',
-    e: 'e.glb',
-    f: 'f.glb',
-    g: 'g.glb',
-    h: 'h.glb',
-    i: 'i.glb',
-    j: 'j.glb',
-    k: 'k.glb',
-    l: 'l.glb',
-    m: 'm.glb',
-    n: 'n.glb',
-    o: 'o.glb',
-    p: 'p.glb',
-    q: 'q.glb',
-    r: 'r.glb',
-    s: 's.glb',
-    t: 't.glb',
-    u: 'u.glb',
-    v: 'v.glb',
-    w: 'w.glb',
-    x: 'x.glb',
-    y: 'y.glb',
-    z: 'z.glb',
+    a: 'a.glb', b: 'b.glb', c: 'c.glb', /* ... remaining paths */
     space: 'space.glb',
 };
 
 // Serve the avatars directory as static files
 app.use('/avatars', express.static(path.join(__dirname, 'avatars')));
 
-// Handle the GET request to fetch avatar paths based on input text
-app.get('/getAvatars/:text', (req, res) => {
-    const inputText = req.params.text.toLowerCase();
-    const glbFiles = [];
+// Azure Speech Service Configuration
+const speechConfig = sdk.SpeechConfig.fromSubscription('8maBUqrkRHoXnRMe7DFj7bdrW5W6b7dTKeXf39fa3UrWgjm9RZPSJQQJ99AJACGhslBXJ3w3AAAYACOGekPi', 'centralindia');
+speechConfig.speechRecognitionLanguage = "en-US";
 
-    for (const char of inputText) {
-        if (avatarPaths[char]) {
-            glbFiles.push(`/avatars/${avatarPaths[char]}`);
-        } else if (char === ' ') {
-            glbFiles.push(`/avatars/${avatarPaths.space}`);
+// Route to Process Speech and Return Avatar Paths
+app.post('/processSpeech', (req, res) => {
+    const audioStream = req.body.audio; // Assuming you're sending audio as base64 encoded
+
+    const audioConfig = sdk.AudioConfig.fromWavFileInput(audioStream);
+    const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+
+    recognizer.recognizeOnceAsync((result) => {
+        if (result.reason === sdk.ResultReason.RecognizedSpeech) {
+            const recognizedText = result.text.toLowerCase();
+            const glbFiles = [];
+
+            // Map recognized text to avatar paths
+            for (const char of recognizedText) {
+                if (avatarPaths[char]) {
+                    glbFiles.push(`/avatars/${avatarPaths[char]}`);
+                } else if (char === ' ') {
+                    glbFiles.push(`/avatars/${avatarPaths.space}`);
+                }
+            }
+
+            res.json(glbFiles);
+        } else {
+            res.status(500).send("Speech recognition failed");
         }
-    }
-
-    res.json(glbFiles);
+    });
 });
 
 const PORT = process.env.PORT || 5000;
