@@ -23,7 +23,7 @@
         "botbuilder-dialogs": "~4.22.1",
         "botbuilder-testing": "~4.22.1",
         "cors": "^2.8.5",
-        "dotenv": "^8.2.0",
+        "dotenv": "^8.6.0",
         "express": "^4.21.1",
         "microsoft-cognitiveservices-speech-sdk": "^1.41.0",
         "restify": "^11.1.0"

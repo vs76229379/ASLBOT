@@ -1,3 +1,5 @@
+require('dotenv').config();  // Load environment variables from the .env file
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -15,8 +17,8 @@ const avatarPaths = {
 // Serve the avatars directory as static files
 app.use('/avatars', express.static(path.join(__dirname, 'avatars')));
 
-// Azure Speech Service Configuration
-const speechConfig = sdk.SpeechConfig.fromSubscription('8maBUqrkRHoXnRMe7DFj7bdrW5W6b7dTKeXf39fa3UrWgjm9RZPSJQQJ99AJACGhslBXJ3w3AAAYACOGekPi', 'centralindia');
+// Azure Speech Service Configuration using environment variables
+const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.AZURE_SUBSCRIPTION_KEY, process.env.AZURE_REGION);
 speechConfig.speechRecognitionLanguage = "en-US";
 
 // Route to Process Speech and Return Avatar Paths
