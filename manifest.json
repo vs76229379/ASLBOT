@@ -1,0 +1,28 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.10/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.10",
+    "version": "1.0.0",
+    "id": "f4fae705-8999-4772-8634-84f644c34ed1", 
+    "packageName": "com.example.aslbot",
+    "name": {
+        "short": "ASL Bot",
+        "full": "American Sign Language Bot"
+    },
+    "description": {
+        "short": "ASL Bot for real-time sign language interpretation",
+        "full": "This bot provides real-time American Sign Language interpretation and avatar display."
+    },
+    "icons": {
+        "outline": "outline.png",
+        "color": "color.png"
+    },
+    "accentColor": "#FFFFFF",
+    "permissions": ["identity", "messageTeamMembers"],
+    "bot": {
+        "botId": "f4fae705-8999-4772-8634-84f644c34ed1",
+        "scopes": ["personal", "team"]
+    },
+    "validDomains": [
+        "aslbot.onrender.com"
+    ]
+}
